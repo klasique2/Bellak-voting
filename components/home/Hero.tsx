@@ -19,6 +19,10 @@ const Hero: React.FC = () => {
     const gradientX = useTransform(springX, [-1, 1], [45, 55]);
     const gradientY = useTransform(springY, [-1, 1], [45, 55]);
 
+    // Transform values for parallax effects (moved to top level)
+    const parallaxX = useTransform(springX, [-1, 1], [-5, 5]);
+    const parallaxY = useTransform(springY, [-1, 1], [-2, 2]);
+
     // Create the dynamic gradient using useMotionTemplate
     const dynamicGradient = useMotionTemplate`radial-gradient(circle at ${gradientX}% ${gradientY}%, rgba(147, 51, 234, 0.1) 0%, transparent 50%)`;
 
@@ -166,7 +170,7 @@ const Hero: React.FC = () => {
                     }}
                     className="mb-8"
                 >
-                    <div className=" mb-16">
+                    <div className="mb-16">
                         {/* <Vote className="w-10 h-10 text-white" /> */}
                     </div>
                 </motion.div>
@@ -256,8 +260,8 @@ const Hero: React.FC = () => {
                         >
                             <motion.div
                                 style={{ 
-                                    x: useTransform(springX, [-1, 1], [-5, 5]),
-                                    y: useTransform(springY, [-1, 1], [-2, 2])
+                                    x: parallaxX,  // Now using the hooks defined at top level
+                                    y: parallaxY   // Now using the hooks defined at top level
                                 }}
                                 className="bg-white/10 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/10 hover:shadow-xl hover:border-white/20 transition-all duration-300"
                             >
