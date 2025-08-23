@@ -148,14 +148,6 @@ const NomineeCard: React.FC<NomineeCardProps> = ({
                         <span>Vote for {nominee.name.split(' ')[0]}</span>
                     </span>
                 </motion.button>
-
-                {/* Additional Stats */}
-                <div className="mt-4 pt-4 border-t border-slate-100">
-                    <div className="flex items-center justify-between text-xs text-slate-500">
-                        <span>Rank #{index + 1}</span>
-                        <span>ID: {nominee.id}</span>
-                    </div>
-                </div>
             </div>
 
             {/* Hover Effect */}

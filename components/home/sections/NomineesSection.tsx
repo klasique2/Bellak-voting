@@ -51,7 +51,7 @@ const NomineesSection: React.FC<NomineesSectionProps> = ({ selectedCategory }) =
     };
 
     return (
-        <section className="py-16 bg-gradient-to-b from-white to-slate-50">
+        <section className="py-16 bg-gradient-to-b from-slate-800 to-slate-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Section Header */}
                 <motion.div
@@ -62,12 +62,12 @@ const NomineesSection: React.FC<NomineesSectionProps> = ({ selectedCategory }) =
                     className="text-center mb-12"
                 >
                     <motion.h2
-                        className="text-4xl md:text-5xl font-bold text-slate-900 mb-4"
+                        className="text-4xl md:text-5xl font-bold text-slate-200 mb-4"
                         layoutId="sectionTitle"
                     >
                         {categoryName}
                     </motion.h2>
-                    <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+                    <p className="text-xl text-slate-50 max-w-3xl mx-auto">
                         {selectedCategory
                             ? `Meet the nominees competing for ${categoryName?.toLowerCase()}`
                             : `Discover all ${nominees.length} nominees across all categories`
@@ -85,12 +85,6 @@ const NomineesSection: React.FC<NomineesSectionProps> = ({ selectedCategory }) =
                                 {nominees.reduce((sum, nominee) => sum + nominee.vote_count, 0).toLocaleString()}
                             </div>
                             <div className="text-sm text-slate-600">Total Votes</div>
-                        </div>
-                        <div className="text-center">
-                            <div className="text-2xl font-bold text-amber-600">
-                                GHC {nominees.reduce((sum, nominee) => sum + parseFloat(nominee.total_amount_raised), 0).toLocaleString('en-GH', { minimumFractionDigits: 2 })}
-                            </div>
-                            <div className="text-sm text-slate-600">Total Raised</div>
                         </div>
                     </div>
                 </motion.div>

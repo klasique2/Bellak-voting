@@ -21,7 +21,7 @@ const CategoryBar: React.FC<CategoryBarProps> = ({ selectedCategory, onCategoryS
     const categoryItems = [allCategoriesItem, ...categories];
 
     return (
-        <section className="py-12 bg-gradient-to-r from-slate-50 to-purple-50 border-y border-slate-200">
+        <section className="py-12 bg-gradient-to-r from-slate-700 to-purple-800 border-y border-slate-200">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Section Header */}
                 <motion.div
@@ -31,10 +31,10 @@ const CategoryBar: React.FC<CategoryBarProps> = ({ selectedCategory, onCategoryS
                     transition={{ duration: 0.6 }}
                     className="text-center mb-8"
                 >
-                    <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+                    <h2 className="text-3xl md:text-4xl font-bold text-slate-300 mb-4">
                         Voting Categories
                     </h2>
-                    <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                    <p className="text-lg text-slate-100 max-w-2xl mx-auto">
                         Choose a category to view nominees, or browse all categories to see everyone
                     </p>
                 </motion.div>
