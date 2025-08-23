@@ -43,14 +43,6 @@ const NomineeCard: React.FC<NomineeCardProps> = ({
                 </div>
             </div>
 
-            {/* Voting Status Badge */}
-            <div className="absolute top-4 right-4 z-10">
-                <div className="flex items-center space-x-1 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                    <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-                    <span>Live</span>
-                </div>
-            </div>
-
             {/* Nominee Photo */}
             <div className="relative h-64 overflow-hidden">
                 {nominee.photo ? (
@@ -72,18 +64,6 @@ const NomineeCard: React.FC<NomineeCardProps> = ({
 
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-
-                {/* Vote Count Overlay */}
-                <div className="absolute bottom-4 right-4">
-                    <motion.div 
-                        className="flex items-center space-x-1 bg-white/90 backdrop-blur-sm px-3 py-2 rounded-full text-sm font-bold text-slate-900"
-                        whileHover={{ scale: 1.05 }}
-                        transition={{ duration: 0.2 }}
-                    >
-                        <Vote className="w-4 h-4 text-purple-600" />
-                        <span>{nominee.vote_count.toLocaleString()}</span>
-                    </motion.div>
-                </div>
             </div>
 
             {/* Nominee Info */}
@@ -92,21 +72,12 @@ const NomineeCard: React.FC<NomineeCardProps> = ({
                     {nominee.name}
                 </h3>
 
-                <p className="text-slate-600 text-sm mb-4 line-clamp-2 leading-relaxed">
+                <p className="text-slate-600 text-sm mb-2 line-clamp-2 leading-relaxed">
                     {nominee.description}
                 </p>
 
                 {/* Stats */}
-                <div className="flex items-center justify-between mb-6">
-                    <motion.div 
-                        className="flex items-center space-x-1 text-emerald-600"
-                        whileHover={{ scale: 1.05 }}
-                        transition={{ duration: 0.2 }}
-                    >
-                        <span className="text-sm font-medium">
-                            GHC {parseFloat(nominee.total_amount_raised).toLocaleString('en-GH', { minimumFractionDigits: 2 })}
-                        </span>
-                    </motion.div>
+                <div className="flex items-center justify-between mb-2">
 
                     <motion.div 
                         className="flex items-center space-x-1 text-indigo-600"
