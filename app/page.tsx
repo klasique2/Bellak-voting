@@ -1,11 +1,12 @@
-import React from 'react'
+import { Hero, VotingContainer } from '@/components';
 
 const HomePage = () => {
   return (
     <div>
-      Homepage
+      <Hero />
+      <VotingContainer />
     </div>
-  )
-}
+  );
+};
 
-export default HomePage
+export default HomePage;

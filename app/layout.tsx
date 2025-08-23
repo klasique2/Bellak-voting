@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Nunito, Rhodium_Libre, Metrophobic } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
+import { Navbar, Footer } from "@/components";
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -35,7 +37,10 @@ export default function RootLayout({
       <body
         className={`${nunito.variable} ${rhodiumLibre.variable} ${metrophobic.variable} antialiased`}
       >
+        <Analytics />
+        <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );
