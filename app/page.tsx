@@ -1,6 +1,8 @@
 import { Hero, VotingContainer } from '@/components';
 import { getCategories, getAllNominees } from './lib/votes';
 
+export const dynamic = 'force-dynamic';
+
 const HomePage = async () => {
   const [categories, allNominees] = await Promise.all([ 
     getCategories(),
