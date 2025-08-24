@@ -2,15 +2,15 @@
 
 import { motion } from 'framer-motion';
 import { Award, Users, Clock } from 'lucide-react';
-import { categories } from '@/data/dummy';
 import { Category } from '@/types/general';
 
 interface CategoryBarProps {
+    categories: Category[];
     selectedCategory: number | null;
     onCategorySelect: (categoryId: number | null) => void;
 }
 
-const CategoryBar: React.FC<CategoryBarProps> = ({ selectedCategory, onCategorySelect }) => {
+const CategoryBar: React.FC<CategoryBarProps> = ({ categories, selectedCategory, onCategorySelect }) => {
     const allCategoriesItem = {
         id: null as number | null,
         name: 'All Categories',
@@ -42,7 +42,7 @@ const CategoryBar: React.FC<CategoryBarProps> = ({ selectedCategory, onCategoryS
                 {/* Categories Scroll Container */}
                 <div className="relative">
                     <div className="overflow-x-auto pb-4 scrollbar-hide">
-                        <div className="flex space-x-4 min-w-max px-2">
+                        <div className="flex space-x-4 min-w-max px-4">
                             {categoryItems.map((item, index) => {
                                 const isSelected = selectedCategory === item.id;
                                 const isAll = item.id === null;
@@ -54,12 +54,12 @@ const CategoryBar: React.FC<CategoryBarProps> = ({ selectedCategory, onCategoryS
                                         whileInView={{ opacity: 1, scale: 1 }}
                                         viewport={{ once: true }}
                                         transition={{ duration: 0.4, delay: index * 0.1 }}
-                                        whileHover={{ y: -8, scale: 1.02 }}
+                                        whileHover={{ y: -5, scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
                                         onClick={() => onCategorySelect(item.id)}
-                                        className={`relative flex-shrink-0 w-80 p-6 rounded-2xl transition-all duration-300 text-left group cursor-pointer ${isSelected
-                                                ? 'bg-gradient-to-br from-purple-600 to-indigo-600 text-white shadow-xl ring-2 ring-purple-300 ring-offset-2'
-                                                : 'bg-white hover:bg-slate-50 text-slate-700 shadow-lg hover:shadow-xl border border-slate-200 hover:border-purple-200'
+                                        className={`relative flex-shrink-0 w-80 px-6 py-4 rounded-2xl transition-all duration-300 text-left group cursor-pointer ${isSelected
+                                                ? 'bg-gradient-to-br from-purple-600 to-indigo-600 text-white ring-2 ring-purple-300 ring-offset-2'
+                                                : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 hover:border-purple-200'
                                             }`}
                                         aria-pressed={isSelected}
                                         role="tab"

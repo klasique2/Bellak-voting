@@ -2,8 +2,14 @@
 
 import { useState } from 'react';
 import {NomineesSection, CategoryBar} from "@/components"
+import { Category, Nominee } from '@/types/general';
 
-const VotingContainer: React.FC = () => {
+type Props = {
+    categories: Category[];
+    allNominees: Nominee[];
+};
+
+const VotingContainer = ({ categories, allNominees }: Props) => {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
   const handleCategorySelect = (categoryId: number | null) => {
@@ -13,10 +19,14 @@ const VotingContainer: React.FC = () => {
   return (
     <>
       <CategoryBar 
+        categories={categories}
         selectedCategory={selectedCategory} 
         onCategorySelect={handleCategorySelect} 
       />
-      <NomineesSection selectedCategory={selectedCategory} />
+      <NomineesSection 
+        selectedCategory={selectedCategory} 
+        allNominees={allNominees}
+      />
     </>
   );
 };

@@ -1,22 +1,89 @@
 'use client';
 
 import { motion, Variants } from 'framer-motion';
-import { Users } from 'lucide-react';
-import { Nominee } from '@/types/general';
-import { getNomineesByCategory, getCategoryById } from '@/data/dummy';
-import {NomineeCard} from "@/components"; 
+import { Users, Loader2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Nominee, Category } from '@/types/general';
+import { NomineeCard } from "@/components";
 
 interface NomineesSectionProps {
     selectedCategory: number | null;
+    allNominees: Nominee[];
 }
 
-const NomineesSection: React.FC<NomineesSectionProps> = ({ selectedCategory }) => {
-    const nominees = getNomineesByCategory(selectedCategory);
-    const categoryName = selectedCategory ? getCategoryById(selectedCategory)?.name : 'All Categories';
+const getCategoryById = async (id: number): Promise<Category | undefined> => {
+    try {
+        const response = await fetch(`/api/get-category-by-id?id=${id}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch category');
+        }
+
+        const category = await response.json();
+        return category;
+    } catch (error) {
+        console.error('Error fetching category:', error);
+        return undefined;
+    }
+};
+
+const NomineesSection: React.FC<NomineesSectionProps> = ({ allNominees, selectedCategory }) => {
+    const [filteredNominees, setFilteredNominees] = useState<Nominee[]>([]);
+    const [categoryName, setCategoryName] = useState<string>('All Categories');
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const getNomineesByCategory = async (categoryId: number | null): Promise<Nominee[]> => {
+        if (categoryId === null) {
+            // For "All Categories", return all nominees
+            return allNominees;
+        }
+
+        try {
+            const response = await fetch(`/api/get-nominees-by-category?category_id=${categoryId}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch nominees');
+            }
+
+            const data = await response.json();
+            return data.results || [];
+        } catch (error) {
+            console.error('Error fetching nominees:', error);
+            return [];
+        }
+    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            setError(null);
+
+            try {
+                // Get nominees for the selected category
+                const nominees = await getNomineesByCategory(selectedCategory);
+                setFilteredNominees(nominees);
+
+                // Set category name
+                if (selectedCategory !== null) {
+                    const category = await getCategoryById(selectedCategory);
+                    setCategoryName(category?.name || 'Unknown Category');
+                } else {
+                    setCategoryName('All Categories');
+                }
+            } catch (err) {
+                setError('Failed to load data');
+                console.error('Error:', err);
+                setFilteredNominees([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [selectedCategory, allNominees]);
 
     const containerVariants: Variants = {
-        hidden: { 
-            opacity: 0 
+        hidden: {
+            opacity: 0
         },
         visible: {
             opacity: 1,
@@ -28,10 +95,10 @@ const NomineesSection: React.FC<NomineesSectionProps> = ({ selectedCategory }) =
     };
 
     const cardVariants: Variants = {
-        hidden: { 
-            opacity: 0, 
-            y: 30, 
-            scale: 0.9 
+        hidden: {
+            opacity: 0,
+            y: 30,
+            scale: 0.9
         },
         visible: {
             opacity: 1,
@@ -44,11 +111,78 @@ const NomineesSection: React.FC<NomineesSectionProps> = ({ selectedCategory }) =
         }
     };
 
-    const handleVoteClick = (nominee: Nominee) => {
-        // TODO: Implement voting logic
-        console.log('Voting for:', nominee.name);
-        // This would typically open a modal or navigate to a voting page
+    const handleVoteClick = async (nominee: Nominee) => {
+        try {
+            // Show loading state (you might want to add a loading state)
+            console.log('Initiating vote for:', nominee.name);
+
+            const response = await fetch('/api/vote/initiate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nominee_id: nominee.id,
+                    voter_name: 'Anonymous Voter' // You can make this dynamic later
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.status === 'success') {
+                // Redirect to Paystack payment page
+                window.location.href = result.data.payment_url;
+            } else {
+                // Handle error
+                console.error('Failed to initiate payment:', result);
+                alert(result.message || 'Failed to initiate payment. Please try again.');
+            }
+
+        } catch (error) {
+            console.error('Error initiating vote:', error);
+            alert('Something went wrong. Please try again.');
+        }
     };
+
+    // Loading state
+    if (loading) {
+        return (
+            <section className="py-16 bg-gradient-to-b from-slate-800 to-slate-50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center py-16">
+                        <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <Loader2 className="w-12 h-12 text-slate-400 animate-spin" />
+                        </div>
+                        <h3 className="text-2xl font-bold text-slate-200 mb-2">Loading nominees...</h3>
+                        <p className="text-slate-300">Please wait while we fetch the latest data.</p>
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
+    // Error state
+    if (error) {
+        return (
+            <section className="py-16 bg-gradient-to-b from-slate-800 to-slate-50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center py-16">
+                        <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <Users className="w-12 h-12 text-red-400" />
+                        </div>
+                        <h3 className="text-2xl font-bold text-slate-200 mb-2">Failed to load nominees</h3>
+                        <p className="text-slate-300 mb-4">{error}</p>
+                        <button
+                            onClick={() => window.location.reload()}
+                            className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                        >
+                            Try Again
+                        </button>
+                    </div>
+                </div>
+            </section>
+        );
+    }
 
     return (
         <section className="py-16 bg-gradient-to-b from-slate-800 to-slate-50">
@@ -70,19 +204,19 @@ const NomineesSection: React.FC<NomineesSectionProps> = ({ selectedCategory }) =
                     <p className="text-xl text-slate-50 max-w-3xl mx-auto">
                         {selectedCategory
                             ? `Meet the nominees competing for ${categoryName?.toLowerCase()}`
-                            : `Discover all ${nominees.length} nominees across all categories`
+                            : `Discover all ${filteredNominees.length} nominees across all categories`
                         }
                     </p>
 
                     {/* Stats Bar */}
                     <div className="flex flex-col sm:flex-row justify-center items-center sm:space-x-8 space-y-4 sm:space-y-0 mt-8 p-6 bg-white rounded-2xl shadow-lg border border-slate-200 max-w-2xl mx-auto">
                         <div className="text-center">
-                            <div className="text-2xl font-bold text-purple-600">{nominees.length}</div>
+                            <div className="text-2xl font-bold text-purple-600">{filteredNominees.length}</div>
                             <div className="text-sm text-slate-600">Nominees</div>
                         </div>
                         <div className="text-center">
                             <div className="text-2xl font-bold text-indigo-600">
-                                {nominees.reduce((sum, nominee) => sum + nominee.vote_count, 0).toLocaleString()}
+                                {filteredNominees.reduce((sum, nominee) => sum + nominee.vote_count, 0).toLocaleString()}
                             </div>
                             <div className="text-sm text-slate-600">Total Votes</div>
                         </div>
@@ -90,7 +224,7 @@ const NomineesSection: React.FC<NomineesSectionProps> = ({ selectedCategory }) =
                 </motion.div>
 
                 {/* Nominees Grid */}
-                {nominees.length > 0 ? (
+                {filteredNominees.length > 0 ? (
                     <motion.div
                         key={selectedCategory} // Force re-render on category change
                         variants={containerVariants}
@@ -99,7 +233,7 @@ const NomineesSection: React.FC<NomineesSectionProps> = ({ selectedCategory }) =
                         viewport={{ once: true, margin: '-100px' }}
                         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
                     >
-                        {nominees.map((nominee, index) => (
+                        {filteredNominees.map((nominee, index) => (
                             <NomineeCard
                                 key={`nominee-${nominee.id}`}
                                 nominee={nominee}
@@ -118,8 +252,8 @@ const NomineesSection: React.FC<NomineesSectionProps> = ({ selectedCategory }) =
                         <div className="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
                             <Users className="w-12 h-12 text-slate-400" />
                         </div>
-                        <h3 className="text-2xl font-bold text-slate-900 mb-2">No nominees found</h3>
-                        <p className="text-slate-600">There are no nominees in this category yet.</p>
+                        <h3 className="text-2xl font-bold text-slate-200 mb-2">No nominees found</h3>
+                        <p className="text-slate-300">There are no nominees in this category yet.</p>
                     </motion.div>
                 )}
             </div>

@@ -46,3 +46,19 @@ export interface VotingStats {
     totalAmount: string;
     activeCategories: number;
 }
+
+export interface VotingResultItem {
+    nominee_id: number;
+    nominee_name: string;
+    photo: string | null;
+    total_votes: number;
+    total_amount_raised: number;
+    percentage: number;
+}
+
+export interface VotingResults {
+    status: string;
+    category: string;
+    total_votes: number;
+    results: VotingResultItem[];
+}

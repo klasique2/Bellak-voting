@@ -219,7 +219,7 @@ const Hero: React.FC = () => {
                         className="text-xl md:text-2xl text-slate-200 max-w-3xl mx-auto leading-relaxed overflow-hidden whitespace-nowrap"
                         style={{ fontFamily: 'monospace' }}
                     >
-                        Empowering democracy through secure voting solutions
+                        Empowering democracy through secure voting
                     </motion.p>
                     <motion.div
                         animate={{ opacity: [1, 0, 1] }}
