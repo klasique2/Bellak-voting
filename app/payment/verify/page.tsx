@@ -103,7 +103,7 @@ const PaymentVerifyContent = () => {
                                 <div className="space-y-1 text-sm text-slate-600">
                                     <p><span className="font-medium">Nominee:</span> {verificationResult.data.nominee_name}</p>
                                     <p><span className="font-medium">Category:</span> {verificationResult.data.category_name}</p>
-                                    <p><span className="font-medium">Amount:</span> ${verificationResult.data.amount_paid}</p>
+                                    <p><span className="font-medium">Amount:</span> GHC{verificationResult.data.amount_paid}</p>
                                     <p><span className="font-medium">Reference:</span> {reference}</p>
                                 </div>
                             </div>
