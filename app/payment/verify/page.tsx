@@ -121,7 +121,7 @@ const PaymentVerifyContent = () => {
                 
                 <button
                     onClick={handleGoHome}
-                    className="w-full bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+                    className="w-full bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors cursor-pointer"
                 >
                     Return to Voting
                 </button>
