@@ -29,12 +29,14 @@ const getCategoryById = async (id: number): Promise<Category | undefined> => {
 const NomineesSection: React.FC<NomineesSectionProps> = ({ allNominees, selectedCategory }) => {
     const [filteredNominees, setFilteredNominees] = useState<Nominee[]>([]);
     const [categoryName, setCategoryName] = useState<string>('All Categories');
+    const [votingPrice, setVotingPrice] = useState<number>(0.50); // Default price
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
     const getNomineesByCategory = async (categoryId: number | null): Promise<Nominee[]> => {
         if (categoryId === null) {
             // For "All Categories", return all nominees
+            console.log("votingPrice for All Categories:", votingPrice);
             return allNominees;
         }
 
@@ -62,12 +64,14 @@ const NomineesSection: React.FC<NomineesSectionProps> = ({ allNominees, selected
                 const nominees = await getNomineesByCategory(selectedCategory);
                 setFilteredNominees(nominees);
 
-                // Set category name
+                // Set category name and voting price
                 if (selectedCategory !== null) {
                     const category = await getCategoryById(selectedCategory);
                     setCategoryName(category?.name || 'Unknown Category');
+                    setVotingPrice(parseFloat(category?.voting_price || '0.50'));
                 } else {
                     setCategoryName('All Categories');
+                    setVotingPrice(0.50); // Default price for "All Categories"
                 }
             } catch (err) {
                 setError('Failed to load data');
@@ -111,10 +115,10 @@ const NomineesSection: React.FC<NomineesSectionProps> = ({ allNominees, selected
         }
     };
 
-    const handleVoteClick = async (nominee: Nominee) => {
+    const handleVoteClick = async (nominee: Nominee, quantity: number) => {
         try {
-            // Show loading state (you might want to add a loading state)
-            console.log('Initiating vote for:', nominee.name);
+            console.log(`Initiating ${quantity} vote(s) for:`, nominee.name);
+            console.log(`Total cost: GHC ${(quantity * votingPrice).toFixed(2)}`);
 
             const response = await fetch('/api/vote/initiate', {
                 method: 'POST',
@@ -123,7 +127,8 @@ const NomineesSection: React.FC<NomineesSectionProps> = ({ allNominees, selected
                 },
                 body: JSON.stringify({
                     nominee_id: nominee.id,
-                    voter_name: 'Anonymous Voter' // You can make this dynamic later
+                    number_of_votes: quantity, // Dynamic quantity
+                    voter_name: 'Anonymous Voter'
                 })
             });
 
@@ -201,12 +206,19 @@ const NomineesSection: React.FC<NomineesSectionProps> = ({ allNominees, selected
                     >
                         {categoryName}
                     </motion.h2>
-                    <p className="text-xl text-slate-50 max-w-3xl mx-auto">
+                    <p className="text-xl text-slate-50 max-w-3xl mx-auto mb-2">
                         {selectedCategory
                             ? `Meet the nominees competing for ${categoryName?.toLowerCase()}`
                             : `Discover all ${filteredNominees.length} nominees across all categories`
                         }
                     </p>
+                    
+                    {/* Display voting price info */}
+                    {selectedCategory && (
+                        <p className="text-lg text-amber-300 font-semibold">
+                            Voting Price: GHC {votingPrice.toFixed(2)} per vote
+                        </p>
+                    )}
 
                     {/* Stats Bar */}
                     <div className="flex flex-col sm:flex-row justify-center items-center sm:space-x-8 space-y-4 sm:space-y-0 mt-8 p-6 bg-white rounded-2xl shadow-lg border border-slate-200 max-w-2xl mx-auto">
@@ -240,6 +252,7 @@ const NomineesSection: React.FC<NomineesSectionProps> = ({ allNominees, selected
                                 index={index}
                                 variants={cardVariants}
                                 onVoteClick={handleVoteClick}
+                                votingPrice={votingPrice} // Pass the category-specific price
                             />
                         ))}
                     </motion.div>
