@@ -12,6 +12,7 @@ interface NomineeCardProps {
     variants?: Variants;
     onVoteClick?: (nominee: Nominee, quantity: number) => void;
     votingPrice?: number; // Price per vote in GHC
+    totalCategoryVotes: number; // Total votes in this category for calculating percentage
 }
 
 const NomineeCard: React.FC<NomineeCardProps> = ({
@@ -19,7 +20,8 @@ const NomineeCard: React.FC<NomineeCardProps> = ({
     index,
     variants,
     onVoteClick,
-    votingPrice = 0.50 // Default price per vote
+    votingPrice = 0.50,
+    totalCategoryVotes
 }) => {
     const [voteQuantity, setVoteQuantity] = useState(1);
     const [isVoting, setIsVoting] = useState(false);
@@ -49,6 +51,9 @@ const NomineeCard: React.FC<NomineeCardProps> = ({
     };
 
     const totalCost = voteQuantity * votingPrice;
+    
+    // Calculate the correct percentage based on category total
+    const votePercentage = totalCategoryVotes > 0 ? (nominee.vote_count / totalCategoryVotes) * 100 : 0;
 
     return (
         <motion.div
@@ -113,21 +118,33 @@ const NomineeCard: React.FC<NomineeCardProps> = ({
                     </motion.div>
                 </div>
 
-                {/* Vote Progress Bar */}
+                {/* Vote Progress Bar - Fixed calculation */}
                 <div className="mb-2">
                     <div className="flex justify-between items-center mb-2">
                         <span className="text-xs text-slate-500">Voting Progress</span>
                         <span className="text-xs font-medium text-slate-600">
-                            {((nominee.vote_count / Math.max(nominee.vote_count, 100)) * 100).toFixed(1)}%
+                            {votePercentage.toFixed(1)}%
                         </span>
                     </div>
                     <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
                         <motion.div
                             className="bg-gradient-to-r from-purple-600 to-indigo-600 h-2 rounded-full"
                             initial={{ width: 0 }}
-                            animate={{ width: `${Math.min((nominee.vote_count / 100) * 100, 100)}%` }}
+                            animate={{ width: `${Math.min(votePercentage, 100)}%` }}
                             transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
                         />
+                    </div>
+                    
+                    {/* Additional context text */}
+                    <div className="flex justify-between items-center mt-1">
+                        <span className="text-xs text-slate-400">
+                            {nominee.vote_count} of {totalCategoryVotes} total votes
+                        </span>
+                        {votePercentage > 0 && (
+                            <span className="text-xs font-medium text-purple-600">
+                                {votePercentage > 50 ? '🔥 Leading' : votePercentage > 25 ? '⭐ Strong' : '💪 Fighting'}
+                            </span>
+                        )}
                     </div>
                 </div>
 
@@ -202,7 +219,8 @@ const NomineeCard: React.FC<NomineeCardProps> = ({
                     whileTap={{ scale: isVoting ? 1 : 0.98 }}
                     onClick={handleVoteClick}
                     disabled={isVoting}
-                    className={`w-full px-4 py-3 font-semibold rounded-xl shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 ${isVoting
+                    className={`w-full px-4 py-3 font-semibold rounded-xl shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 ${
+                        isVoting
                             ? 'bg-slate-400 cursor-not-allowed'
                             : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 hover:shadow-xl cursor-pointer'
                         } text-white group/button`}

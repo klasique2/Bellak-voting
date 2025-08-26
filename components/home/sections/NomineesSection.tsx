@@ -54,6 +54,8 @@ const NomineesSection: React.FC<NomineesSectionProps> = ({ allNominees, selected
         }
     };
 
+    const totalCategoryVotes = filteredNominees.reduce((sum, nominee) => sum + nominee.vote_count, 0);
+
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -253,6 +255,7 @@ const NomineesSection: React.FC<NomineesSectionProps> = ({ allNominees, selected
                                 variants={cardVariants}
                                 onVoteClick={handleVoteClick}
                                 votingPrice={votingPrice} // Pass the category-specific price
+                                totalCategoryVotes={totalCategoryVotes}
                             />
                         ))}
                     </motion.div>
