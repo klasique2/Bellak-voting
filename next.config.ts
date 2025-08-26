@@ -5,8 +5,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'img.freepik.com',
-        pathname: '/**'
+        hostname: 'superapi.freecomx.com',
+        port: '',
+        pathname: '/**',
       },
       {
         protocol: 'https',
