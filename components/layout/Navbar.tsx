@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Vote, Menu, X } from 'lucide-react';
@@ -104,8 +105,8 @@ const Navbar: React.FC = () => {
                                     whileTap={{ scale: 0.95 }}
                                     className="relative"
                                 >
-                                    <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg">
-                                        <Vote className="w-4 h-4 text-white" aria-hidden="true" />
+                                    <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-purple-100 to-indigo-200 rounded-lg">
+                                        <Image src="/logo.png" alt="Bellak Logo" width={32} height={32} />
                                     </div>
                                 </motion.div>
                                 <div>

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, Variants } from 'framer-motion';
 import { Vote, Shield, Users, Zap } from 'lucide-react';
 
@@ -89,11 +90,15 @@ const Footer: React.FC = () => {
                                 <motion.div
                                     whileHover={{ rotate: 360, scale: 1.1 }}
                                     transition={{ duration: 0.6 }}
-                                    className="relative"
+                                    className="relative overflow-hidden"
                                 >
-                                    <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-indigo-400 rounded-xl blur-lg opacity-50" />
-                                    <div className="relative flex items-center justify-center w-12 h-12 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-xl shadow-lg">
-                                        <Vote className="w-7 h-7 text-white" />
+                                    <div className="relative flex items-center justify-center w-20 h-20 rounded-xl shadow-lg overflow-hidden">
+                                        <Image
+                                            src="/logo.png"
+                                            alt="Bellak Logo"
+                                            width={52}
+                                            height={52}
+                                        />
                                     </div>
                                 </motion.div>
                                 <div className="flex flex-col">
