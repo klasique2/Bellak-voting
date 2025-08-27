@@ -249,7 +249,7 @@ const NomineeCard: React.FC<NomineeCardProps> = ({
 
                 {/* Quick Select Buttons */}
                 <div className="mt-2 flex flex-wrap gap-2">
-                    {[5, 10, 25, 50].map((quickAmount) => (
+                    {[5, 10, 25, 50, 100, 200].map((quickAmount) => (
                         <motion.button
                             key={quickAmount}
                             whileHover={{ scale: 1.05 }}
